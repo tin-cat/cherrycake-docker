@@ -1,0 +1,36 @@
+#!/bin/bash
+# Sets up Nginx
+
+APP_DIR=/var/www/app
+
+echo "
+	server {
+		listen 80 default_server;
+		listen [::]:80 default_server ipv6only=on;
+
+		server_name _;
+
+		root $APP_DIR/public;
+		index index.php;
+
+		include $APP_DIR/vendor/tin-cat/cherrycake/nginx.conf;
+
+		location ~ \.php$ {
+			try_files \$uri =404;
+			fastcgi_split_path_info ^(.+\.php)(/.+)\$;
+			fastcgi_pass php:9000;
+			fastcgi_index index.php;
+			include fastcgi_params;
+			fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+			fastcgi_param PATH_INFO \$fastcgi_path_info;
+		}
+
+		location ~ /.well-known {
+			allow all;
+		}
+	}
+" > /etc/nginx/conf.d/default.conf
+
+echo "Nginx setup to work with Cherrycake."
+
+service nginx reload

@@ -75,8 +75,9 @@ redis-ssh: ## SSH into the Redis container
 ## Cherrycake app installation commands
 install-skeleton: ## Installs the base Cherrycake source, nginx settings and more on the Nginx container.
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/install-skeleton
-	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-config
 	docker exec -it -u root ${DOCKER_PHP} /scripts/composer-update
+	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-config
+	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-nginx
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/install-base-database
 
 setup-config: ## Creates the Cherrycake config files
@@ -87,6 +88,9 @@ composer-update: ## Updates Cherrycake's composer dependencies
 
 install-base-database: ## Installs an initial Cherrycake database on the MariaDB container. Existing database will be deleted.
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/install-base-database
+
+setup-nginx: ## Sets up Nginx to work with Cherrycake
+	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-nginx
 
 redis-flush-all: ## Flushes the entire Redis cache (Uncomitted queues will be lost)
 	docker exec -it -u root ${DOCKER_REDIS} redis-cli flushall

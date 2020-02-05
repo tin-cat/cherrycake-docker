@@ -10,8 +10,8 @@ if [ -f $APP_DIR/config/Database.config.php ]; then
 	echo "Database.config.php already exists."
 else
 	cp $APP_DIR/config/Database.config.php.example $APP_DIR/config/Database.config.php
-	sed -i 's/\[replace_with_your_database_host\]/localhost/g' $APP_DIR/config/Database.config.php
-	sed -i 's/\[replace_with_your_database_user\]//g' $APP_DIR/config/Database.config.php
+	sed -i 's/\[replace_with_your_database_host\]/mariadb/g' $APP_DIR/config/Database.config.php
+	sed -i 's/\[replace_with_your_database_user\]/root/g' $APP_DIR/config/Database.config.php
 	sed -i 's/\[replace_with_your_database_password\]//g' $APP_DIR/config/Database.config.php
 	sed -i 's/\[replace_with_your_database_name\]/cherrycake/g' $APP_DIR/config/Database.config.php
 	echo "Database configuration file Database.config.php created."

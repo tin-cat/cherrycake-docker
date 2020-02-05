@@ -36,7 +36,7 @@ RUN apt-get update &&\
 	&& docker-php-ext-configure gd --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
-RUN docker-php-ext-install pdo_mysql json curl xml opcache exif
+RUN docker-php-ext-install pdo_mysql mysqli json curl xml opcache exif
 
 RUN printf '[PHP]\ndate.timezone = "UTC"\n' > /usr/local/etc/php/conf.d/tzone.ini
 
