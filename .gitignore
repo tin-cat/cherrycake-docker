@@ -1,0 +1,6 @@
+app
+
+# Annoying files
+.DS_Store
+thumbs.db
+._*

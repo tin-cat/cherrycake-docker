@@ -1,0 +1,94 @@
+version: "3.6"
+
+services:
+    nginx:
+        image: cherrycake-app-nginx
+        container_name: cherrycake-app-nginx
+        build:
+            context: .
+            dockerfile: ./nginx/Dockerfile
+        ports:
+            - 80:80
+        networks:
+            - cherrycake-app-front
+            - cherrycake-app-back
+            - emailqueue
+        volumes:
+            - ../app:/var/www/app:cached
+            - ./nginx/scripts:/scripts
+
+    php:
+        image: cherrycake-app-php
+        container_name: cherrycake-app-php
+        build:
+            context: .
+            dockerfile: ./php/Dockerfile
+            args:
+                USER_ID: 1000
+                GROUP_ID: 1000
+        networks:
+            - cherrycake-app-back
+            - emailqueue
+        volumes:
+            - ../app:/var/www/app:cached
+            - ./php/additional.ini:/usr/local/etc/php/conf.d/additional.ini
+            - ./php/scripts:/scripts
+    
+    cron:
+        image: cherrycake-app-cron
+        container_name: cherrycake-app-cron
+        build:
+            context: .
+            dockerfile: ./cron/Dockerfile
+        networks:
+            - cherrycake-app-back
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ../app:/var/www/app:cached
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: cherrycake-app-phpmyadmin
+        ports:
+            - 8080:80
+        links:
+            - mariadb
+        environment:
+            - PMA_HOST=mariadb
+            - UPLOAD_LIMIT=1073741824
+        networks:
+            - cherrycake-app-back
+
+    mariadb:
+        image: mariadb
+        container_name: cherrycake-app-mariadb
+        environment:
+            - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+        networks:
+            - cherrycake-app-back
+        volumes:
+            - cherrycake-app-db-data:/var/lib/mysql
+        environment:
+            - MYSQL_DATABASE=cherrycake
+            - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+    redis:
+        image: redis
+        container_name: cherrycake-app-redis
+        networks:
+            - cherrycake-app-back
+        volumes:
+            - cherrycake-app-redis-data:/data
+
+volumes:
+    cherrycake-app-db-data: {}
+    cherrycake-app-redis-data: {}
+
+networks:
+    cherrycake-app-front:
+        name: cherrycake-app-front
+    cherrycake-app-back:
+        name: cherrycake-app-back
+    emailqueue:
+        name: emailqueue

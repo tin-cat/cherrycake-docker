@@ -1,0 +1,37 @@
+#!/bin/bash
+# Creates setup configuration files
+
+APP_DIR=/var/www/app
+
+echo "Creating Cherrycake setup configuration files"
+
+# Create database configuration file
+if [ -f $APP_DIR/config/Database.config.php ]; then
+	echo "Database.config.php already exists."
+else
+	cp $APP_DIR/config/Database.config.php.example $APP_DIR/config/Database.config.php
+	sed -i 's/\[replace_with_your_database_host\]/localhost/g' $APP_DIR/config/Database.config.php
+	sed -i 's/\[replace_with_your_database_user\]//g' $APP_DIR/config/Database.config.php
+	sed -i 's/\[replace_with_your_database_password\]//g' $APP_DIR/config/Database.config.php
+	sed -i 's/\[replace_with_your_database_name\]/cherrycake/g' $APP_DIR/config/Database.config.php
+	echo "Database configuration file Database.config.php created."
+fi
+
+# Create Janitor configuration file
+if [ -f $APP_DIR/config/Janitor.config.php ]; then
+	echo "Janitor.config.php already exists."
+else
+	cp $APP_DIR/config/Janitor.config.php.example $APP_DIR/config/Janitor.config.php
+	sed -i 's/\[replace_with_your_janitor_key\]/jjdasuh77283491..fda!/g' $APP_DIR/config/Janitor.config.php
+	echo "Janitor configuration file Janitor.config.php created."
+fi
+
+# Create Cache configuration file
+if [ -f $APP_DIR/config/Cache.config.php ]; then
+	echo "Cache.config.php already exists."
+else
+	cp $APP_DIR/config/Cache.config.php.example $APP_DIR/config/Cache.config.php
+	sed -i 's/\[replace_with_your_redis_host\]/redis/g' $APP_DIR/config/Cache.config.php
+	sed -i 's/\[replace_with_your_redis_port\]/6379/g' $APP_DIR/config/Cache.config.php
+	echo "Cache configuration file Cache.config.php created."
+fi

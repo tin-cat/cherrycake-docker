@@ -1,0 +1,33 @@
+#!/bin/bash
+# Installs a Cherrycake base database
+
+APP_DIR=/var/www/app
+
+echo "Installing base Cherrycake Database"
+echo "This will install an initial empty Cherrycake database on the MariaDB container. Existing database will be deleted, are you sure? (y/n)"
+
+read -n 1 -r
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    exit 1
+fi
+echo
+
+echo "Installing, will take a while ...";
+
+echo 'DROP DATABASE IF EXISTS cherrycake' | mysql --host=mariadb
+echo 'CREATE DATABASE cherrycake' | mysql --host=mariadb
+for filename in \
+	janitor.sql \
+	locale.sql \
+	location.sql \
+	session.sql \
+	stats.sql \
+	systemLog.sql \
+	users.sql \
+	location-data.sql
+do
+	cat $APP_DIR/install/database/$filename | mysql --host=mariadb --database=cherrycake
+done
+
+echo "Installed"

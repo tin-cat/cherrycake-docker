@@ -1,0 +1,16 @@
+#!/bin/bash
+# Installs a Cherrycake Skeleton source
+
+APP_DIR=/var/www/app
+
+echo "Installing Cherrycake skeleton source"
+
+# Install sources from github repository
+if [ ! -d $APP_DIR/.git ]; then
+	echo "Cloning from Cherrycake sekeleton repository"
+	rm -Rf $APP_DIR/*	
+	git clone https://github.com/tin-cat/cherrycake-skeleton.git $APP_DIR
+	echo "Cherrycake skeleton has been installed"
+else
+	echo "Cherrycake skeleton is already installed, nothing done"
+fi

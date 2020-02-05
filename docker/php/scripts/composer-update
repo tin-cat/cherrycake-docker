@@ -1,0 +1,7 @@
+#!/bin/bash
+# Updates Cherrycake's composer dependencies
+
+APP_DIR=/var/www/app
+
+composer update -d $APP_DIR
+chmod 777 $APP_DIR/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer.php
