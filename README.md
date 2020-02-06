@@ -1,5 +1,7 @@
-# Cherrycake Docker
-
+     _ |_   _  _  _     _  _  |   _ 
+    (_ | ) (- |  |  \/ (_ (_| |( (-
+                    /        docker
+	                         
 https://cherrycake.io
 
 Set up a server with Cherrycake running and an application initial skeleton ready for you to start creating your application using Cherrycake.
@@ -48,5 +50,3 @@ make install-skeleton
 ### Beta statement
 
 Although Cherrycake is still under heavy development and it's considered to still be in a beta stage, it's functional and it's already running some public web applications without issues. It's still not recommended to use Cherrycake in critical, or data sensitive applications. Instead, you're encouraged to try it to see for yourself whether it meets your security and stability requisites, and to contribute your suggestions or improvements via the official git repositories.
-
-<a href="https://cherrycake.io" title="Powered by Cherrycake"><img src="https://cherrycake.io/powered_by_cherrycake.svg"/></a>
