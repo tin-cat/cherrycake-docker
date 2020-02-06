@@ -3,19 +3,13 @@
 
 APP_DIR=/var/www/app
 
-echo "Installing base Cherrycake Database"
-echo "This will install an initial empty Cherrycake database on the MariaDB container. Existing database will be deleted, are you sure? (y/n)"
-
-read -n 1 -r
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
-    exit 1
+if mysql --host=mariadb -u root -e 'use cherrycake'; then
+	echo "Cherrycake database already exists."
+	exit 1
 fi
-echo
 
-echo "Installing, will take a while ...";
+echo "Installing Cherrycake skeleton database.";
 
-echo 'DROP DATABASE IF EXISTS cherrycake' | mysql --host=mariadb
 echo 'CREATE DATABASE cherrycake' | mysql --host=mariadb
 for filename in \
 	janitor.sql \
@@ -30,4 +24,4 @@ do
 	cat $APP_DIR/install/database/$filename | mysql --host=mariadb --database=cherrycake
 done
 
-echo "Installed"
+echo "Installed Cherrycake skeleton database"

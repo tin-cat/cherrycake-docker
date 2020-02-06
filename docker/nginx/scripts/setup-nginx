@@ -13,7 +13,7 @@ echo "
 		root $APP_DIR/public;
 		index index.php;
 
-		include $APP_DIR/vendor/tin-cat/cherrycake/nginx.conf;
+		include $APP_DIR/vendor/tin-cat/cherrycake-engine/nginx.conf;
 
 		location ~ \.php$ {
 			try_files \$uri =404;
