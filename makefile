@@ -33,20 +33,8 @@ help: ## Show this help message
 	echo '                 '$(COLOR_B)'/        '$(COLOR_C)'docker'
 	echo $(COLOR_RESET)
 	echo 'usage: make ['$(COLOR_BLUE)'command'$(COLOR_RESET)']'
-	echo $(COLOR_RESET)
-	
-	@IFS=$$'\n' ; \
-    help_lines=(`fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##/:/'`); \
-    for help_line in $${help_lines[@]}; do \
-        IFS=$$':' ; \
-        help_split=($$help_line) ; \
-        help_command=`echo $${help_split[0]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \
-        help_info=`echo $${help_split[2]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \
-        printf $(COLOR_BLUE); \
-        printf "%-30s %s" $$help_command ; \
-        printf $(COLOR_RESET); \
-        printf "%s\n" $$help_info; \
-    done
+	echo
+	@echo "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\'$(COLOR_BLUE)'\1\'$(COLOR_RESET)':\2/' | column -c2 -t -s :)"
 
 ##
 up: ## Start the containers
