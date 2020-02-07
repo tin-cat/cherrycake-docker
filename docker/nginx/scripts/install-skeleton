@@ -6,11 +6,13 @@ APP_DIR=/var/www/app
 echo "Installing Cherrycake skeleton source"
 
 # Install sources from github repository
-if [ ! -d $APP_DIR/.git ]; then
-	echo "Cloning from Cherrycake sekeleton repository"
-	rm -Rf $APP_DIR/*	
-	git clone https://github.com/tin-cat/cherrycake-skeleton.git $APP_DIR
-	echo "Cherrycake skeleton has been installed"
-else
-	echo "Cherrycake skeleton is already installed, nothing done"
+if [ -d $APP_DIR/.git ]; then
+	echo "Cherrycake skeleton was already installed"
+	exit 0
 fi
+
+echo "Cloning from Cherrycake skeleton repository"
+rm -Rf $APP_DIR/*	
+git clone https://github.com/tin-cat/cherrycake-skeleton.git $APP_DIR
+
+echo "Cherrycake skeleton installed, app developer mode set"

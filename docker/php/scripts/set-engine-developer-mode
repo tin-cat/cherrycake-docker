@@ -1,0 +1,28 @@
+#!/bin/bash
+# Sets this Cherrycake installation in engine developer mode
+# This installs the Cherrycake engine in a directory outside the vendor packages, exposes it on /cherrycake-engine and sets the App to use it instead of the vendor packages.
+
+APP_DIR=/var/www/app
+ENGINE_DIR=/cherrycake-engine
+
+if [ ! -f $APP_DIR/load.php ]; then
+	echo "Cherrycake Skeleton is not installed"
+	exit 0
+fi
+
+# Install cherrycake-engine in a directory outside cherrycake skeleton
+if [ ! -d $ENGINE_DIR/.git ]; then
+	rm -Rf $ENGINE_DIR/*	
+	git clone https://github.com/tin-cat/cherrycake-engine.git $ENGINE_DIR
+	composer update -d $ENGINE_DIR
+	chmod 777 $ENGINE_DIR/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer.php
+	echo "Cherrycake engine installed in directory outside skeleton"
+else
+	echo "Cherrycake engine was already installed in directory outside skeleton"
+fi
+
+# Set the cherrycake skeleton to use the outher exposed cherrycake engine
+echo "<?php require \"$ENGINE_DIR/load.php\";" > $APP_DIR/load.php
+
+echo "Engine developer mode set"
+echo "App is exposed under /app, Cherrycake's engine is exposed under /cherrycake-engine"

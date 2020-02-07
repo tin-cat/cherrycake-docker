@@ -9,15 +9,46 @@ DOCKER_CRON = $(PROJECT_NAME)-cron
 DOCKER_DB = $(PROJECT_NAME)-mariadb
 DOCKER_REDIS = $(PROJECT_NAME)-redis
 
-## Docker commands
+COLOR_WHITE = "\033[1m"
+COLOR_RED = "\033[31m"
+COLOR_GREEN = "\033[32m"
+COLOR_YELLOW = "\033[33m"
+COLOR_BLUE = "\033[34m"
+COLOR_RED_LIGHT = "\033[35m"
+COLOR_BLUE_LIGHT = "\033[36m"
+COLOR_BG_RED = "\033[41m"
+COLOR_BG_GREEN = "\033[42m"
+COLOR_BG_YELLOW = "\033[43m"
+COLOR_BG_BLUE = "\033[44m"
+COLOR_RESET = "\033[0m"
+
+COLOR_A = $(COLOR_RED_LIGHT)
+COLOR_B = $(COLOR_RED_LIGHT)
+COLOR_C = $(COLOR_BLUE_LIGHT)
+
 
 help: ## Show this help message
-	echo 'Cherrycake docker make'
-	echo 'usage: make [command]'
-	echo
-	echo 'commands:'
-	egrep '^(.+)\:\ ##\ (.+)' ${MAKEFILE_LIST} | column -t -c 2 -s ':#'
+	echo $(COLOR_A)'  _ |_   _  '$(COLOR_B)'_  _     '$(COLOR_C)'_  _  |   _'
+	echo $(COLOR_A)' (_ | ) (- '$(COLOR_B)'|  |  \/ '$(COLOR_C)'(_ (_| |( (-'
+	echo '                 '$(COLOR_B)'/        '$(COLOR_C)'docker'
+	echo $(COLOR_RESET)
+	echo 'usage: make ['$(COLOR_BLUE)'command'$(COLOR_RESET)']'
+	echo $(COLOR_RESET)
+	
+	@IFS=$$'\n' ; \
+    help_lines=(`fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##/:/'`); \
+    for help_line in $${help_lines[@]}; do \
+        IFS=$$':' ; \
+        help_split=($$help_line) ; \
+        help_command=`echo $${help_split[0]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \
+        help_info=`echo $${help_split[2]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \
+        printf $(COLOR_BLUE); \
+        printf "%-30s %s" $$help_command ; \
+        printf $(COLOR_RESET); \
+        printf "%s\n" $$help_info; \
+    done
 
+##
 up: ## Start the containers
 	docker-compose -p ${PROJECT_NAME} --file docker/docker-compose.yml up -d
 
@@ -72,8 +103,8 @@ db-ssh: ## SSH into the MariaDB container
 redis-ssh: ## SSH into the Redis container
 	docker exec -it -u root ${DOCKER_REDIS} bash
 
-## Cherrycake app installation commands
-install-skeleton: ## Installs the base Cherrycake source, nginx settings and more on the Nginx container.
+##
+install-skeleton: ## Installs a base Cherrycake installation, exposing the App under /app for development
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/install-skeleton
 	docker exec -it -u root ${DOCKER_PHP} /scripts/composer-update
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-config
@@ -92,5 +123,12 @@ install-base-database: ## Installs an initial Cherrycake database on the MariaDB
 setup-nginx: ## Sets up Nginx to work with Cherrycake
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-nginx
 
+engine-developer-mode: ## Sets this installation in engine developer mode, suitable only to Cherrycake Engine developers. The Cherrycake Engine is exposed under /cherrycake-engine, and the app is under /app
+	docker exec -it -u root ${DOCKER_PHP} /scripts/set-engine-developer-mode
+
+app-developer-mode: ## Sets this installation in app developer mode (the default mode). The Cherrycake Engine is not exposed, the App is under /app
+	docker exec -it -u root ${DOCKER_PHP} /scripts/set-app-developer-mode
+
+##
 redis-flush-all: ## Flushes the entire Redis cache (Uncomitted queues will be lost)
 	docker exec -it -u root ${DOCKER_REDIS} redis-cli flushall
