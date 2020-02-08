@@ -26,6 +26,8 @@ COLOR_A = $(COLOR_RED_LIGHT)
 COLOR_B = $(COLOR_RED_LIGHT)
 COLOR_C = $(COLOR_BLUE_LIGHT)
 
+JANITOR_KEY=`cat variables/janitorKey`
+
 
 help: ## Show this help message
 	echo $(COLOR_A)'  _ |_   _  '$(COLOR_B)'_  _     '$(COLOR_C)'_  _  |   _'
@@ -95,6 +97,7 @@ redis-ssh: ## SSH into the Redis container
 install-skeleton: ## Sets up a base Cherrycake installation
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/install-skeleton
 	docker exec -it -u root ${DOCKER_PHP} /scripts/composer-update
+	scripts/generate-janitor-key
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-config
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-nginx
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/install-base-database
@@ -117,12 +120,15 @@ engine-developer-mode: ## Sets this installation in engine developer mode
 app-developer-mode: ## Sets this installation in app developer mode
 	docker exec -it -u root ${DOCKER_PHP} /scripts/set-app-developer-mode
 
+generate-janitor-key: ## Generates a random Janitor key
+	scripts/generate-janitor-key
+
 ##
 cli: ## Executes a Cherrycake cli action. Syntax 'make cli action=[action name]'
 	docker exec -it -u root ${DOCKER_PHP} /var/www/app/cherrycake $(action)
 
-janitor-run: ## Runs the janitor
-	docker exec -it -u root ${DOCKER_PHP} /var/www/app/cherrycake janitorRun
+janitor: ## Runs the janitor
+	docker exec -it -u root ${DOCKER_PHP} /var/www/app/cherrycake janitorRun --key=$(JANITOR_KEY)
 
 redis-flush-all: ## Flushes the entire Redis cache (Uncomitted queues will be lost)
 	docker exec -it -u root ${DOCKER_REDIS} redis-cli flushall

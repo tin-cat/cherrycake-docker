@@ -2,6 +2,7 @@
 # Creates setup configuration files
 
 APP_DIR=/var/www/app
+VARIABLES_DIR=/variables
 
 echo "Creating Cherrycake setup configuration files"
 
@@ -17,15 +18,6 @@ else
 	echo "Database configuration file Database.config.php created."
 fi
 
-# Create Janitor configuration file
-if [ -f $APP_DIR/config/Janitor.config.php ]; then
-	echo "Janitor.config.php already exists."
-else
-	cp $APP_DIR/config/Janitor.config.php.example $APP_DIR/config/Janitor.config.php
-	sed -i 's/\[replace_with_your_janitor_key\]/jjdasuh77283491..fda!/g' $APP_DIR/config/Janitor.config.php
-	echo "Janitor configuration file Janitor.config.php created."
-fi
-
 # Create Cache configuration file
 if [ -f $APP_DIR/config/Cache.config.php ]; then
 	echo "Cache.config.php already exists."
@@ -34,4 +26,22 @@ else
 	sed -i 's/\[replace_with_your_redis_host\]/redis/g' $APP_DIR/config/Cache.config.php
 	sed -i 's/\[replace_with_your_redis_port\]/6379/g' $APP_DIR/config/Cache.config.php
 	echo "Cache configuration file Cache.config.php created."
+fi
+
+# Create Janitor configuration file
+if [ ! -f $VARIABLES_DIR/janitorKey ]; then
+	echo "Janitor key was not generated, couldn't setup configuration for Janitor"
+else
+
+	if [ -f $APP_DIR/config/Janitor.config.php ]; then
+		rm $APP_DIR/config/Janitor.config.php
+	fi
+
+	JANITOR_KEY=`cat $VARIABLES_DIR/janitorKey`
+	JANITOR_KEY_ESCAPED=$(echo $JANITOR_KEY | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')
+	
+	cp $APP_DIR/config/Janitor.config.php.example $APP_DIR/config/Janitor.config.php
+	sed -i 's/\[replace_with_your_janitor_key\]/'$JANITOR_KEY_ESCAPED'/g' $APP_DIR/config/Janitor.config.php
+	echo "Janitor configuration file Janitor.config.php created."
+
 fi

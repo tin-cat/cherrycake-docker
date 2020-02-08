@@ -16,6 +16,7 @@ services:
         volumes:
             - ../app:/var/www/app:cached
             - ../cherrycake-engine:/cherrycake-engine:cached
+            - ../variables:/variables:cached
             - ./nginx/scripts:/scripts
 
     php:
@@ -33,6 +34,7 @@ services:
         volumes:
             - ../app:/var/www/app:cached
             - ../cherrycake-engine:/cherrycake-engine:cached
+            - ../variables:/variables:cached
             - ./php/additional.ini:/usr/local/etc/php/conf.d/additional.ini
             - ./php/scripts:/scripts
     
