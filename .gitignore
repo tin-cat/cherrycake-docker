@@ -1,5 +1,6 @@
 app
 cherrycake-engine
+variables/janitorKey
 
 # Annoying files
 .DS_Store
