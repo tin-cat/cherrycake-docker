@@ -92,7 +92,7 @@ redis-ssh: ## SSH into the Redis container
 	docker exec -it -u root ${DOCKER_REDIS} bash
 
 ##
-install-skeleton: ## Installs a base Cherrycake installation, exposing the App under /app for development
+install-skeleton: ## Sets up a base Cherrycake installation
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/install-skeleton
 	docker exec -it -u root ${DOCKER_PHP} /scripts/composer-update
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-config
@@ -105,18 +105,24 @@ setup-config: ## Creates the Cherrycake config files
 composer-update: ## Updates Cherrycake's composer dependencies
 	docker exec -it -u root ${DOCKER_PHP} /scripts/composer-update
 
-install-base-database: ## Installs an initial Cherrycake database on the MariaDB container. Existing database will be deleted.
+install-base-database: ## Installs an initial Cherrycake database on the MariaDB container
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/install-base-database
 
 setup-nginx: ## Sets up Nginx to work with Cherrycake
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/setup-nginx
 
-engine-developer-mode: ## Sets this installation in engine developer mode, suitable only to Cherrycake Engine developers. The Cherrycake Engine is exposed under /cherrycake-engine, and the app is under /app
+engine-developer-mode: ## Sets this installation in engine developer mode
 	docker exec -it -u root ${DOCKER_PHP} /scripts/set-engine-developer-mode
 
-app-developer-mode: ## Sets this installation in app developer mode (the default mode). The Cherrycake Engine is not exposed, the App is under /app
+app-developer-mode: ## Sets this installation in app developer mode
 	docker exec -it -u root ${DOCKER_PHP} /scripts/set-app-developer-mode
 
 ##
+cli: ## Executes a Cherrycake cli action. Syntax 'make cli action=[action name]'
+	docker exec -it -u root ${DOCKER_PHP} /var/www/app/cherrycake $(action)
+
+janitor-run: ## Runs the janitor
+	docker exec -it -u root ${DOCKER_PHP} /var/www/app/cherrycake janitorRun
+
 redis-flush-all: ## Flushes the entire Redis cache (Uncomitted queues will be lost)
 	docker exec -it -u root ${DOCKER_REDIS} redis-cli flushall

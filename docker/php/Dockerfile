@@ -43,9 +43,6 @@ RUN printf '[PHP]\ndate.timezone = "UTC"\n' > /usr/local/etc/php/conf.d/tzone.in
 # Install APCu
 RUN pecl install APCu-5.1.18
 RUN docker-php-ext-enable apcu
-RUN echo "extension=apcu.so" >> /usr/local/etc/php/php.ini
-RUN echo "apc.enable_cli=1" >> /usr/local/etc/php/php.ini
-RUN echo "apc.enable=1" >> /usr/local/etc/php/php.ini
 
 USER ${USER_ID}:${GROUP_ID}
 

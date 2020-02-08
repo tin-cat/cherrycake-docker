@@ -5,7 +5,7 @@ APP_DIR=/var/www/app
 
 if mysql --host=mariadb -u root -e 'use cherrycake'; then
 	echo "Cherrycake database already exists."
-	exit 1
+	exit 0
 fi
 
 echo "Installing Cherrycake skeleton database.";
