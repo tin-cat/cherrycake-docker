@@ -49,6 +49,7 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ../app:/var/www/app:cached
+            - ../variables:/variables:cached
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin

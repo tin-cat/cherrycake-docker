@@ -1,2 +1,2 @@
-* * * * * docker exec -u root cherrycake-app-php /var/www/app/cherrycake /janitor/run?key=jjdasuh77283491..fda! >> /var/log/cron.log 2>&1
+* * * * * docker exec -u root cherrycake-app-php /var/www/app/cherrycake janitorRun --key=`cat /variables/janitorKey` >> /var/log/cron.log 2>&1
 # Empty line on purpose
