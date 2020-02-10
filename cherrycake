@@ -60,12 +60,12 @@ commands=(
 	engine-developer-mode
 	app-developer-mode
 	generate-janitor-key
+	cli
+	janitor
+	redis-flush-all
 )
 
 VARIABLES_DIR='variables'
-
-JANITOR_KEY_FILE=$VARIABLES_DIR'/janitorKey'
-APP_NAME_FILE=$VARIABLES_DIR'/appName'
 
 function header {
 	echo -e $COLOR_A'  _ |_   _  '$COLOR_B'_  _     '$COLOR_C'_  _  |   _'
@@ -112,6 +112,9 @@ function listCommands {
 			"engine-developer-mode") echo "Sets this installation in engine developer mode";;
 			"app-developer-mode") echo "Sets this installation in app developer mode";;
 			"generate-janitor-key") echo "Generates a random Janitor key";;
+			"cli") echo "Executes a Cherrycake cli action. Pass the action name as value";;
+			"janitor") echo "Runs the janitor";;
+			"redis-flush-all") echo "Flushes the entire Redis cache (Uncomitted queues will be lost)";;
 		esac
 		
 	done
@@ -128,6 +131,15 @@ function warning {
 
 function info {
 	echo -e $COLOR_INFO$1$COLOR_RESET'\n'
+}
+
+function getJanitorKey {
+	JANITOR_KEY_FILE=$VARIABLES_DIR'/janitorKey'
+	if [ ! -f $JANITOR_KEY_FILE ]; then
+		echo "Janitor key not created. Use the 'generate-janitor-key' command"
+		exit 1
+	fi
+	JANITOR_KEY=`cat $JANITOR_KEY_FILE`
 }
 
 header
@@ -236,12 +248,19 @@ case "$1" in
 	"generate-janitor-key")
 		scripts/generate-janitor-key
 		;;
+	"cli")
+		docker exec -it -u root $DOCKER_PHP /var/www/app/cherrycake $2
+		;;
+	"janitor")
+		getJanitorKey
+		docker exec -it -u root $DOCKER_PHP /var/www/app/cherrycake janitorRun --key=$JANITOR_KEY
+		;;
+	"redis-flush-all")
+		docker exec -it -u root $DOCKER_REDIS redis-cli flushall
+		;;
 	*)
 		error "Unknown command '$1'"
 		syntax
 		listCommands
 		;;
 esac
-
-JANITOR_KEY=`cat $JANITOR_KEY_FILE`
-APP_NAME=`cat $APP_NAME_FILE`
