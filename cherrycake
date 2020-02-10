@@ -33,25 +33,31 @@ COLOR_INFO=$COLOR_BLUE
 
 commands=(
 	help
+	-
 	up
 	stop
 	down
 	restart
 	status
+	-
 	nginx-build
 	nginx-log
 	nginx-ssh
 	nginx-restart
+	-
 	php-build
 	php-log
 	php-ssh
 	php-restart
+	-
 	cron-ssh
 	cron-restart
+	-
 	db-build
 	db-log
 	db-ssh
 	db-restart
+	-
 	install-skeleton
 	setup-config
 	composer-update
@@ -60,6 +66,7 @@ commands=(
 	engine-developer-mode
 	app-developer-mode
 	generate-janitor-key
+	-
 	cli
 	janitor
 	redis-flush-all
@@ -68,10 +75,7 @@ commands=(
 VARIABLES_DIR='variables'
 
 function header {
-	echo -e $COLOR_A'  _ |_   _  '$COLOR_B'_  _     '$COLOR_C'_  _  |   _'
-	echo -e $COLOR_A' (_ | ) (- '$COLOR_B'|  |  \/ '$COLOR_C'(_ (_| |( (-'
-	echo -e '                 '$COLOR_B'/        '$COLOR_C'docker'
-	echo -e $COLOR_RESET
+	echo -e $COLOR_A'🧁 Cherrycake '$COLOR_C'docker'$COLOR_RESET
 }
 
 function syntax {
@@ -81,44 +85,48 @@ function syntax {
 function listCommands {
 	for command in ${commands[*]}; do
 
-		printf "%b" "$COLOR_COMMAND$command$COLOR_RESET "
+		if [ $command == '-' ]; then
+			r=$r'-----\n'
+			continue
+		fi
 
+		r=$r$COLOR_COMMAND$command$COLOR_RESET#
 		case "$command" in
-			"help") echo "Shows this help message";;
-			"up") echo "Start the containers";;
-			"stop") echo "Stop the containers";;
-			"down") echo "Remove the containers";;
-			"restart") echo "Restart the containers";;
-			"status") echo "Information about the containers";;
-			"nginx-build") echo "Build the Nginx container";;
-			"nginx-log") echo "Tail the Nginx log";;
-			"nginx-ssh") echo "SSH into the Nginx container";;
-			"nginx-restart") echo "Restarts the Nginx container";;
-			"php-build") echo "Build the PHP container";;
-			"php-log") echo "Tail the PHP log";;
-			"php-ssh") echo "SSH into the PHP container";;
-			"php-restart") echo "Restarts the PHP container";;
-			"cron-ssh") echo "SSH into the Cron container";;
-			"cron-restart") echo "Restarts the Cron container";;
-			"db-build") echo "Build the Database container";;
-			"db-log") echo "Tail the Database container log";;
-			"db-ssh") echo "SSH into the Database container";;
-			"db-restart") echo "Restarts the Database container";;
-			"install-skeleton") echo "Sets up a base Cherrycake installation";;
-			"setup-config") echo "Creates the Cherrycake config files";;
-			"composer-update") echo "Updates Cherrycake's composer dependencies";;
-			"install-base-database") echo "Installs an initial Cherrycake database on the MariaDB container";;
-			"setup-nginx") echo "Sets up Nginx to work with Cherrycake";;
-			"engine-developer-mode") echo "Sets this installation in engine developer mode";;
-			"app-developer-mode") echo "Sets this installation in app developer mode";;
-			"generate-janitor-key") echo "Generates a random Janitor key";;
-			"cli") echo "Executes a Cherrycake cli action. Pass the action name as value";;
-			"janitor") echo "Runs the janitor";;
-			"redis-flush-all") echo "Flushes the entire Redis cache (Uncomitted queues will be lost)";;
+			"help") r=$r"Shows this help message";;
+			"up") r=$r"Start the containers";;
+			"stop") r=$r"Stop the containers";;
+			"down") r=$r"Remove the containers";;
+			"restart") r=$r"Restart the containers";;
+			"status") r=$r"Information about the containers";;
+			"nginx-build") r=$r"Build the Nginx container";;
+			"nginx-log") r=$r"Tail the Nginx log";;
+			"nginx-ssh") r=$r"SSH into the Nginx container";;
+			"nginx-restart") r=$r"Restarts the Nginx container";;
+			"php-build") r=$r"Build the PHP container";;
+			"php-log") r=$r"Tail the PHP log";;
+			"php-ssh") r=$r"SSH into the PHP container";;
+			"php-restart") r=$r"Restarts the PHP container";;
+			"cron-ssh") r=$r"SSH into the Cron container";;
+			"cron-restart") r=$r"Restarts the Cron container";;
+			"db-build") r=$r"Build the Database container";;
+			"db-log") r=$r"Tail the Database container log";;
+			"db-ssh") r=$r"SSH into the Database container";;
+			"db-restart") r=$r"Restarts the Database container";;
+			"install-skeleton") r=$r"Sets up a base Cherrycake installation";;
+			"setup-config") r=$r"Creates the Cherrycake config files";;
+			"composer-update") r=$r"Updates Cherrycake's composer dependencies";;
+			"install-base-database") r=$r"Installs an initial Cherrycake database on the MariaDB container";;
+			"setup-nginx") r=$r"Sets up Nginx to work with Cherrycake";;
+			"engine-developer-mode") r=$r"Sets this installation in engine developer mode";;
+			"app-developer-mode") r=$r"Sets this installation in app developer mode";;
+			"generate-janitor-key") r=$r"Generates a random Janitor key";;
+			"cli") r=$r"Executes a Cherrycake cli action. Pass the action name as value";;
+			"janitor") r=$r"Runs the janitor";;
+			"redis-flush-all") r=$r"Flushes the entire Redis cache (Uncomitted queues will be lost)";;
 		esac
-		
+		r=$r'\n'
 	done
-	echo -e '\n'
+	echo -e $r | column -t -s "#"
 }
 
 function error {

@@ -1,7 +1,4 @@
-     _ |_   _  _  _     _  _  |   _
-    (_ | ) (- |  |  \/ (_ (_| |( (-
-                    /        docker
-	                         
+# 🧁 Cherrycake docker                        
 https://cherrycake.io
 
 Set up a server with Cherrycake running and an application initial skeleton ready for you to start creating your application using Cherrycake.
