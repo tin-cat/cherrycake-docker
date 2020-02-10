@@ -1,6 +1,8 @@
 MAKEFLAGS += --silent
 
-PROJECT_NAME = cherrycake-app
+JANITOR_KEY=`cat variables/janitorKey`
+
+PROJECT_NAME = "cherrycake-app"
 
 DOCKER_NGINX = $(PROJECT_NAME)-nginx
 DOCKER_PHP = $(PROJECT_NAME)-php
@@ -26,13 +28,15 @@ COLOR_A = $(COLOR_RED_LIGHT)
 COLOR_B = $(COLOR_RED_LIGHT)
 COLOR_C = $(COLOR_BLUE_LIGHT)
 
-JANITOR_KEY=`cat variables/janitorKey`
-
-
 help: ## Show this help message
 	echo $(COLOR_A)'  _ |_   _  '$(COLOR_B)'_  _     '$(COLOR_C)'_  _  |   _'
 	echo $(COLOR_A)' (_ | ) (- '$(COLOR_B)'|  |  \/ '$(COLOR_C)'(_ (_| |( (-'
-	echo '                 '$(COLOR_B)'/        '$(COLOR_C)'docker'
+	printf '                 '$(COLOR_B)'/        '$(COLOR_C)
+	@if [ -z $(PROJECT_NAME) ]; then \
+		echo "Unnamed project";\
+	else\
+		echo $(PROJECT_NAME);\
+	fi
 	echo $(COLOR_RESET)
 	echo 'usage: make ['$(COLOR_BLUE)'command'$(COLOR_RESET)']'
 	echo
@@ -51,7 +55,7 @@ down: ## Remove the containers
 restart: ## Restart the containers
 	$(MAKE) stop && $(MAKE) up
 
-ps: ## Information about the containers
+status: ## Information about the containers
 	docker-compose -p ${PROJECT_NAME} --file docker/docker-compose.yml ps
 
 nginx-build: ## Builds the Nginx image
@@ -93,7 +97,10 @@ db-ssh: ## SSH into the MariaDB container
 redis-ssh: ## SSH into the Redis container
 	docker exec -it -u root ${DOCKER_REDIS} bash
 
-##
+## Sets the App name. Syntax 'make set-app-name name=[App name]'
+set-app-name:
+	scripts/set-app-name $(name)
+
 install-skeleton: ## Sets up a base Cherrycake installation
 	docker exec -it -u root ${DOCKER_NGINX} /scripts/install-skeleton
 	docker exec -it -u root ${DOCKER_PHP} /scripts/composer-update

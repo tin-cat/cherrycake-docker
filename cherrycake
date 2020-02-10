@@ -1,0 +1,284 @@
+#!/bin/bash
+# Cherrycake docker tool
+
+COLOR_WHITE="\033[1m"
+COLOR_RED="\033[31m"
+COLOR_GREEN="\033[32m"
+COLOR_YELLOW="\033[33m"
+COLOR_BLUE="\033[34m"
+COLOR_RED_LIGHT="\033[35m"
+COLOR_BLUE_LIGHT="\033[36m"
+COLOR_BG_RED="\033[41m"
+COLOR_BG_GREEN="\033[42m"
+COLOR_BG_YELLOW="\033[43m"
+COLOR_BG_BLUE="\033[44m"
+COLOR_RESET="\033[0m"
+
+COLOR_A=$COLOR_RED_LIGHT
+COLOR_B=$COLOR_RED_LIGHT
+COLOR_C=$COLOR_BLUE_LIGHT
+COLOR_COMMAND=$COLOR_BLUE
+COLOR_ERROR=$COLOR_RED
+COLOR_WARNING=$COLOR_YELLOW
+COLOR_INFO=$COLOR_BLUE
+
+commands=(
+	help
+	up
+	stop
+	down
+	restart
+	status
+	nginx-build
+	nginx-log
+	nginx-ssh
+	nginx-restart
+	php-build
+	php-log
+	php-ssh
+	php-restart
+	cron-ssh
+	cron-restart
+	db-build
+	db-log
+	db-ssh
+	db-restart
+	set-app-name
+	install-skeleton
+	setup-config
+	composer-update
+	install-base-database
+	setup-nginx
+	engine-developer-mode
+	app-developer-mode
+	generate-janitor-key
+)
+
+VARIABLES_DIR='variables'
+
+JANITOR_KEY_FILE=$VARIABLES_DIR'/janitorKey'
+APP_NAME_FILE=$VARIABLES_DIR'/appName'
+
+function header {
+	echo -e $COLOR_A'  _ |_   _  '$COLOR_B'_  _     '$COLOR_C'_  _  |   _'
+	echo -e $COLOR_A' (_ | ) (- '$COLOR_B'|  |  \/ '$COLOR_C'(_ (_| |( (-'
+	echo -e '                 '$COLOR_B'/        '$COLOR_C
+	echo -e $COLOR_RESET
+}
+
+function syntax {
+	echo -e 'syntax: cherrycake '$COLOR_BLUE'command'$COLOR_RESET' [value]\n'
+}
+
+function listCommands {
+	for command in ${commands[*]}; do
+
+		printf "%b" "$COLOR_COMMAND$command$COLOR_RESET "
+
+		case "$command" in
+			"help") echo "Shows this help message";;
+			"up") echo "Start the containers";;
+			"stop") echo "Stop the containers";;
+			"down") echo "Remove the containers";;
+			"restart") echo "Restart the containers";;
+			"status") echo "Information about the containers";;
+			"nginx-build") echo "Build the Nginx container";;
+			"nginx-log") echo "Tail the Nginx log";;
+			"nginx-ssh") echo "SSH into the Nginx container";;
+			"nginx-restart") echo "Restarts the Nginx container";;
+			"php-build") echo "Build the PHP container";;
+			"php-log") echo "Tail the PHP log";;
+			"php-ssh") echo "SSH into the PHP container";;
+			"php-restart") echo "Restarts the PHP container";;
+			"cron-ssh") echo "SSH into the Cron container";;
+			"cron-restart") echo "Restarts the Cron container";;
+			"db-build") echo "Build the Database container";;
+			"db-log") echo "Tail the Database container log";;
+			"db-ssh") echo "SSH into the Database container";;
+			"db-restart") echo "Restarts the Database container";;
+			"set-app-name") echo "Sets the App name";;
+			"install-skeleton") echo "Sets up a base Cherrycake installation";;
+			"setup-config") echo "Creates the Cherrycake config files";;
+			"composer-update") echo "Updates Cherrycake's composer dependencies";;
+			"install-base-database") echo "Installs an initial Cherrycake database on the MariaDB container";;
+			"setup-nginx") echo "Sets up Nginx to work with Cherrycake";;
+			"engine-developer-mode") echo "Sets this installation in engine developer mode";;
+			"app-developer-mode") echo "Sets this installation in app developer mode";;
+			"generate-janitor-key") echo "Generates a random Janitor key";;
+		esac
+		
+	done
+	echo -e '\n'
+}
+
+function error {
+	echo -e $COLOR_ERROR$1$COLOR_RESET'\n'
+}
+
+function warning {
+	echo -e $COLOR_WARNING$1$COLOR_RESET'\n'
+}
+
+function info {
+	echo -e $COLOR_INFO$1$COLOR_RESET'\n'
+}
+
+function requireAppName {
+	if [ ! -f $APP_NAME_FILE ]; then
+		error "App name is required to be set, use the 'set-app-name' command to do so"
+		exit 1
+	fi
+}
+
+function getAppName {
+	requireAppName
+	APP_NAME=`cat $APP_NAME_FILE`
+	PROJECT_NAME=$APP_NAME
+	DOCKER_NGINX=cherrycake-app-nginx
+	DOCKER_PHP=cherrycake-app-php
+	DOCKER_MARIADB=cherrycake-app-mariadb
+	DOCKER_CRON=cherrycake-app-cron
+	DOCKER_DB=cherrycake-app-mariadb
+	DOCKER_REDIS=cherrycake-app-redis
+}
+
+header
+
+# Check if we haven't received any command
+if [ $# -eq 0 ]; then
+	syntax
+	listCommands
+	exit 1
+fi
+
+# Check commands and run them
+case "$1" in
+	"help")
+		syntax
+		listCommands
+		;;
+	"up")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml up -d
+		;;
+	"stop")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml stop
+		;;
+	"down")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml down
+		;;
+	"restart")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml stop
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml up -d
+		;;
+	"status")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml ps
+		;;
+	"nginx-build")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml build nginx
+		;;
+	"nginx-log")
+		getAppName
+		docker logs -f --details $DOCKER_NGINX
+		;;
+	"nginx-ssh")
+		getAppName
+		docker exec -it -u root $DOCKER_NGINX bash
+		;;
+	"nginx-restart")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml restart nginx
+		;;
+	"php-build")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml build php
+		;;
+	"php-log")
+		getAppName
+		docker logs -f --details $DOCKER_PHP
+		;;
+	"php-ssh")
+		getAppName
+		docker exec -it -u root $DOCKER_PHP bash
+		;;
+	"php-restart")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml restart php
+		;;
+	"cron-ssh")
+		getAppName
+		docker exec -it -u root $DOCKER_CRON bash
+		;;
+	"cron-restart")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml restart cron
+		;;
+	"db-build")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml build mariadb
+		;;
+	"db-log")
+		getAppName
+		docker logs -f --details $DOCKER_DB
+		;;
+	"db-ssh")
+		getAppName
+		docker exec -it -u root $DOCKER_DB bash
+		;;
+	"db-restart")
+		getAppName
+		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml restart mariadb
+		;;
+	"set-app-name")
+		scripts/set-app-name $2
+		;;
+	"install-skeleton")
+		getAppName
+		docker exec -it -u root $DOCKER_NGINX /scripts/install-skeleton
+		docker exec -it -u root $DOCKER_PHP /scripts/composer-update
+		scripts/generate-janitor-key
+		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
+		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
+		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
+		;;
+	"setup-config")
+		getAppName
+		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
+		;;
+	"composer-update")
+		getAppName
+		docker exec -it -u root $DOCKER_PHP /scripts/composer-update
+		;;
+	"install-base-database")
+		getAppName
+		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
+		;;
+	"setup-nginx")
+		getAppName
+		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
+		;;
+	"engine-developer-mode")
+		getAppName
+		docker exec -it -u root $DOCKER_PHP /scripts/set-engine-developer-mode
+		;;
+	"app-developer-mode")
+		getAppName
+		docker exec -it -u root $DOCKER_PHP /scripts/set-app-developer-mode
+		;;
+	"generate-janitor-key")
+		scripts/generate-janitor-key
+		;;
+	*)
+		error "Unknown command '$1'"
+		syntax
+		listCommands
+		;;
+esac
+
+JANITOR_KEY=`cat $JANITOR_KEY_FILE`
+APP_NAME=`cat $APP_NAME_FILE`

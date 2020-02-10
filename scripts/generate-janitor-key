@@ -9,8 +9,6 @@ MAIN_DIR=$dir'/..'
 VARIABLES_DIR=$MAIN_DIR/variables
 JANITOR_KEY=`openssl rand -base64 32`
 
-echo $VARIABLES_DIR
-
 if [ ! -d "$VARIABLES_DIR" ]; then
 	mkdir "$VARIABLES_DIR"
 fi
