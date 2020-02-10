@@ -1,6 +1,15 @@
 #!/bin/bash
 # Cherrycake docker tool
 
+APP_NAME="cherrycake-app"
+
+DOCKER_NGINX=$APP_NAME-nginx
+DOCKER_PHP=$APP_NAME-php
+DOCKER_MARIADB=$APP_NAME-mariadb
+DOCKER_CRON=$APP_NAME-cron
+DOCKER_DB=$APP_NAME-mariadb
+DOCKER_REDIS=$APP_NAME-redis
+
 COLOR_WHITE="\033[1m"
 COLOR_RED="\033[31m"
 COLOR_GREEN="\033[32m"
@@ -43,7 +52,6 @@ commands=(
 	db-log
 	db-ssh
 	db-restart
-	set-app-name
 	install-skeleton
 	setup-config
 	composer-update
@@ -62,7 +70,7 @@ APP_NAME_FILE=$VARIABLES_DIR'/appName'
 function header {
 	echo -e $COLOR_A'  _ |_   _  '$COLOR_B'_  _     '$COLOR_C'_  _  |   _'
 	echo -e $COLOR_A' (_ | ) (- '$COLOR_B'|  |  \/ '$COLOR_C'(_ (_| |( (-'
-	echo -e '                 '$COLOR_B'/        '$COLOR_C
+	echo -e '                 '$COLOR_B'/        '$COLOR_C'docker'
 	echo -e $COLOR_RESET
 }
 
@@ -96,7 +104,6 @@ function listCommands {
 			"db-log") echo "Tail the Database container log";;
 			"db-ssh") echo "SSH into the Database container";;
 			"db-restart") echo "Restarts the Database container";;
-			"set-app-name") echo "Sets the App name";;
 			"install-skeleton") echo "Sets up a base Cherrycake installation";;
 			"setup-config") echo "Creates the Cherrycake config files";;
 			"composer-update") echo "Updates Cherrycake's composer dependencies";;
@@ -123,25 +130,6 @@ function info {
 	echo -e $COLOR_INFO$1$COLOR_RESET'\n'
 }
 
-function requireAppName {
-	if [ ! -f $APP_NAME_FILE ]; then
-		error "App name is required to be set, use the 'set-app-name' command to do so"
-		exit 1
-	fi
-}
-
-function getAppName {
-	requireAppName
-	APP_NAME=`cat $APP_NAME_FILE`
-	PROJECT_NAME=$APP_NAME
-	DOCKER_NGINX=cherrycake-app-nginx
-	DOCKER_PHP=cherrycake-app-php
-	DOCKER_MARIADB=cherrycake-app-mariadb
-	DOCKER_CRON=cherrycake-app-cron
-	DOCKER_DB=cherrycake-app-mariadb
-	DOCKER_REDIS=cherrycake-app-redis
-}
-
 header
 
 # Check if we haven't received any command
@@ -157,88 +145,69 @@ case "$1" in
 		syntax
 		listCommands
 		;;
-	"up")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml up -d
+	"start")
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml up -d
+		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
 		;;
 	"stop")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml stop
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml stop
 		;;
 	"down")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml down
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml down
 		;;
 	"restart")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml stop
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml up -d
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml stop
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml up -d
 		;;
 	"status")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml ps
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml ps
 		;;
 	"nginx-build")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml build nginx
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml build nginx
 		;;
 	"nginx-log")
-		getAppName
 		docker logs -f --details $DOCKER_NGINX
 		;;
 	"nginx-ssh")
-		getAppName
 		docker exec -it -u root $DOCKER_NGINX bash
 		;;
 	"nginx-restart")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml restart nginx
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml restart nginx
 		;;
 	"php-build")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml build php
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml build php
 		;;
 	"php-log")
-		getAppName
 		docker logs -f --details $DOCKER_PHP
 		;;
 	"php-ssh")
-		getAppName
 		docker exec -it -u root $DOCKER_PHP bash
 		;;
 	"php-restart")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml restart php
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml restart php
 		;;
 	"cron-ssh")
-		getAppName
 		docker exec -it -u root $DOCKER_CRON bash
 		;;
 	"cron-restart")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml restart cron
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml restart cron
 		;;
 	"db-build")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml build mariadb
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml build mariadb
 		;;
 	"db-log")
-		getAppName
 		docker logs -f --details $DOCKER_DB
 		;;
 	"db-ssh")
-		getAppName
 		docker exec -it -u root $DOCKER_DB bash
 		;;
 	"db-restart")
-		getAppName
-		docker-compose -p $PROJECT_NAME --file docker/docker-compose.yml restart mariadb
+		docker-compose -p $APP_NAME --file docker/docker-compose.yml restart mariadb
 		;;
 	"set-app-name")
 		scripts/set-app-name $2
 		;;
 	"install-skeleton")
-		getAppName
 		docker exec -it -u root $DOCKER_NGINX /scripts/install-skeleton
 		docker exec -it -u root $DOCKER_PHP /scripts/composer-update
 		scripts/generate-janitor-key
@@ -247,27 +216,21 @@ case "$1" in
 		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
 		;;
 	"setup-config")
-		getAppName
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
 		;;
 	"composer-update")
-		getAppName
 		docker exec -it -u root $DOCKER_PHP /scripts/composer-update
 		;;
 	"install-base-database")
-		getAppName
 		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
 		;;
 	"setup-nginx")
-		getAppName
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
 		;;
 	"engine-developer-mode")
-		getAppName
 		docker exec -it -u root $DOCKER_PHP /scripts/set-engine-developer-mode
 		;;
 	"app-developer-mode")
-		getAppName
 		docker exec -it -u root $DOCKER_PHP /scripts/set-app-developer-mode
 		;;
 	"generate-janitor-key")
