@@ -3,7 +3,6 @@
 # This removes the exposed Cherrycake engine from /cherrycake-engine, and sets back the App to use the cherrycake engine from the composer package
 
 APP_DIR=/var/www/app
-ENGINE_DIR=/cherrycake-engine
 
 # Set the cherrycake skeleton to use its inner cherrycake engine package under vendor
 echo "<?php require \"vendor/tin-cat/cherrycake-engine/load.php\";" > $APP_DIR/load.php

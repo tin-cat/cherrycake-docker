@@ -15,7 +15,7 @@ services:
             - emailqueue
         volumes:
             - ../app:/var/www/app:cached
-            - ../cherrycake-engine:/cherrycake-engine:cached
+            - ../engine:/engine:cached
             - ../variables:/variables:cached
             - ./nginx/scripts:/scripts
 
@@ -33,7 +33,7 @@ services:
             - emailqueue
         volumes:
             - ../app:/var/www/app:cached
-            - ../cherrycake-engine:/cherrycake-engine:cached
+            - ../engine:/engine:cached
             - ../variables:/variables:cached
             - ./php/additional.ini:/usr/local/etc/php/conf.d/additional.ini
             - ./php/scripts:/scripts
