@@ -13,6 +13,11 @@ if [ ! -d "$VARIABLES_DIR" ]; then
 	mkdir "$VARIABLES_DIR"
 fi
 
+if [ -f $VARIABLES_DIR/janitorKey ]; then
+	echo "Janitor key was already generated"
+	exit 1
+fi
+
 echo $JANITOR_KEY > $VARIABLES_DIR/janitorKey
 echo "Janitor key generated:"
 echo $JANITOR_KEY

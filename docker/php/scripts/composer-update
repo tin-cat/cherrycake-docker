@@ -1,7 +1,13 @@
 #!/bin/bash
-# Updates Cherrycake's composer dependencies
+# Updates Cherrycake's skeleton composer dependencies
 
 APP_DIR=/var/www/app
 
-composer update -d $APP_DIR
+if [ ! -f $APP_DIR/load.php ]; then
+	echo "Cherrycake skeleton is not installed"
+	exit 0
+fi
+
+composer selfupdate
+composer update --prefer-dist -d $APP_DIR
 chmod 777 $APP_DIR/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer.php

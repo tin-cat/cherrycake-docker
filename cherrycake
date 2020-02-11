@@ -34,7 +34,7 @@ COLOR_INFO=$COLOR_BLUE
 commands=(
 	help
 	-
-	up
+	start
 	stop
 	down
 	restart
@@ -93,7 +93,7 @@ function listCommands {
 		r=$r$COLOR_COMMAND$command$COLOR_RESET#
 		case "$command" in
 			"help") r=$r"Shows this help message";;
-			"up") r=$r"Start the containers";;
+			"start") r=$r"Start the containers";;
 			"stop") r=$r"Stop the containers";;
 			"down") r=$r"Remove the containers";;
 			"restart") r=$r"Restart the containers";;
@@ -167,7 +167,12 @@ case "$1" in
 		;;
 	"start")
 		docker-compose -p $APP_NAME --file docker/docker-compose.yml up -d
+		docker exec -it -u root $DOCKER_NGINX /scripts/install-skeleton
+		docker exec -it -u root $DOCKER_PHP /scripts/composer-update
+		scripts/generate-janitor-key
+		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
+		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
 		;;
 	"stop")
 		docker-compose -p $APP_NAME --file docker/docker-compose.yml stop
