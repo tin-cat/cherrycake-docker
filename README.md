@@ -19,22 +19,16 @@ You'll need docker in your system. Follow [the official docker documentation](ht
 ```bash
 git clone https://github.com/tin-cat/cherrycake-docker.git
 ```
-* There's a command interface based on `make` that allows you to run commands on your Cherrycake installation. Run `make help` to see all the available commands.
-* Start the Cherrycake server by running the `up`command
+* There's a command line interface that allows you to run commands on your Cherrycake installation. Run `./cherrycake help` to see all the available commands.
+* Start the Cherrycake server by running the `start` command. The first time you run it will take some time.
 ```bash
-make up
+./cherrycake start
 ````
-* The first time you run `make up` it will take some time to build the images.
-* Perform an initial installation of the Cherrycake skeleton by running the `install-skeleton` command
-```bash
-make install-skeleton
-````
-* That's it, your system is now running a server with a working Cherrycake installation and a Cherrycake base skeleton is ready for you to start working on your Cherrycake-based project, now you can:
+* That's it, your system is now running a server with a working Cherrycake installation and a Cherrycake base skeleton that is ready for you to start working on your project, now you can:
 
 	* Access `http://localhost` on your browser to see the running App.
 	* Access `http://localhost:8080` to admin your database (User 'root' without password)
 	* Your Cherrycake project is stored under the `/app` directory, you might start working there.
-
 
 ### Other Cherrycake repositories
 
