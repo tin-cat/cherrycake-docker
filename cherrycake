@@ -167,8 +167,7 @@ case "$1" in
 		;;
 	"start")
 		docker-compose -p $APP_NAME --file docker/docker-compose.yml up -d
-		docker exec -it -u root $DOCKER_NGINX /scripts/install-skeleton
-		docker exec -it -u root $DOCKER_PHP /scripts/composer-update
+		docker exec -it -u root $DOCKER_PHP /scripts/install-skeleton
 		scripts/generate-janitor-key
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
@@ -233,8 +232,7 @@ case "$1" in
 		scripts/set-app-name $2
 		;;
 	"install-skeleton")
-		docker exec -it -u root $DOCKER_NGINX /scripts/install-skeleton
-		docker exec -it -u root $DOCKER_PHP /scripts/composer-update
+		docker exec -it -u root $DOCKER_PHP /scripts/install-skeleton
 		scripts/generate-janitor-key
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx

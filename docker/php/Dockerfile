@@ -44,7 +44,7 @@ RUN printf '[PHP]\ndate.timezone = "UTC"\n' > /usr/local/etc/php/conf.d/tzone.in
 RUN pecl install APCu-5.1.18
 RUN docker-php-ext-enable apcu
 
-# Instal XDebug
+# Install XDebug
 RUN yes | pecl install xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
 	&& echo "xdebug.default_enable=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
