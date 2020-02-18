@@ -22,7 +22,9 @@ else
 fi
 
 # Set the cherrycake skeleton to use the outher exposed cherrycake engine
-echo "<?php require \"$ENGINE_DIR/load.php\";" > $APP_DIR/load.php
+cp $APP_DIR/load.php.example $APP_DIR/load.php
+sed -i 's/\[replace-with-path-to-cherrycake-engine-load.php\]/'$ENGINE_DIR'/load.php/g' $APP_DIR/config/Cache.config.php
+echo "load.php created"
 
 echo "Engine developer mode set"
 echo "App is exposed under /app, Cherrycake's engine is exposed under /engine"

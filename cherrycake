@@ -172,6 +172,7 @@ case "$1" in
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
 		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
+		docker exec -it -u root $DOCKER_PHP /scripts/set-default-developer-mode
 		;;
 	"stop")
 		docker-compose -p $APP_NAME --file docker/docker-compose.yml stop
