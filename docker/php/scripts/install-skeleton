@@ -3,7 +3,7 @@
 
 APP_DIR=/var/www/app
 
-if [ -f $APP_DIR/load.php ]; then
+if [ -f $APP_DIR/load.php.example ]; then
 	echo "Cherrycake skeleton is already installed"
 	exit 0
 fi
