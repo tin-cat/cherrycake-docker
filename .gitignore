@@ -1,6 +1,8 @@
 app
 engine
 variables
+docker/mariadb-data
+docker/redis-data
 
 # Annoying files
 .DS_Store

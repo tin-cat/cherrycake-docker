@@ -67,12 +67,10 @@ services:
     mariadb:
         image: mariadb
         container_name: cherrycake-app-mariadb
-        environment:
-            - MYSQL_ALLOW_EMPTY_PASSWORD=yes
         networks:
             - cherrycake-app-back
         volumes:
-            - cherrycake-app-db-data:/var/lib/mysql
+            - ./mariadb-data:/var/lib/mysql:cached
         environment:
             - MYSQL_DATABASE=cherrycake
             - MYSQL_ALLOW_EMPTY_PASSWORD=yes
@@ -84,11 +82,7 @@ services:
         networks:
             - cherrycake-app-back
         volumes:
-            - cherrycake-app-redis-data:/data
-
-volumes:
-    cherrycake-app-db-data: {}
-    cherrycake-app-redis-data: {}
+            - ./redis-data:/data:cached
 
 networks:
     cherrycake-app-front:
