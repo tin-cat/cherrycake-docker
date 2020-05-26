@@ -65,10 +65,10 @@ commands=(
 	setup-nginx
 	engine-developer-mode
 	app-developer-mode
-	generate-janitor-key
 	-
 	cli
 	janitor
+	janitorStatus
 	redis-flush-all
 )
 
@@ -119,9 +119,9 @@ function listCommands {
 			"setup-nginx") r=$r"Sets up Nginx to work with Cherrycake";;
 			"engine-developer-mode") r=$r"Sets this installation in engine developer mode";;
 			"app-developer-mode") r=$r"Sets this installation in app developer mode";;
-			"generate-janitor-key") r=$r"Generates a random Janitor key";;
 			"cli") r=$r"Executes a Cherrycake cli action. Pass the action name as value";;
 			"janitor") r=$r"Runs the janitor";;
+			"janitorStatus") r=$r"Shows the status of the Janitor tasks";;
 			"redis-flush-all") r=$r"Flushes the entire Redis cache (Uncomitted queues will be lost)";;
 		esac
 		r=$r'\n'
@@ -141,17 +141,6 @@ function info {
 	echo -e $COLOR_INFO$1$COLOR_RESET'\n'
 }
 
-function getJanitorKey {
-	JANITOR_KEY_FILE=$VARIABLES_DIR'/janitorKey'
-	if [ ! -f $JANITOR_KEY_FILE ]; then
-		echo "Janitor key not created. Use the 'generate-janitor-key' command"
-		exit 1
-	fi
-	JANITOR_KEY=`cat $JANITOR_KEY_FILE`
-}
-
-header
-
 # Check if we haven't received any command
 if [ $# -eq 0 ]; then
 	syntax
@@ -168,7 +157,6 @@ case "$1" in
 	"start")
 		docker-compose -p $APP_NAME --file docker/docker-compose.yml up -d
 		docker exec -it -u root $DOCKER_PHP /scripts/install-skeleton
-		scripts/generate-janitor-key
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
 		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
@@ -234,7 +222,6 @@ case "$1" in
 		;;
 	"install-skeleton")
 		docker exec -it -u root $DOCKER_PHP /scripts/install-skeleton
-		scripts/generate-janitor-key
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
 		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
@@ -257,15 +244,14 @@ case "$1" in
 	"app-developer-mode")
 		docker exec -it -u root $DOCKER_PHP /scripts/set-app-developer-mode
 		;;
-	"generate-janitor-key")
-		scripts/generate-janitor-key
-		;;
 	"cli")
 		docker exec -it -u root $DOCKER_PHP /var/www/app/cherrycake $2
 		;;
 	"janitor")
-		getJanitorKey
-		docker exec -it -u root $DOCKER_PHP /var/www/app/cherrycake janitorRun --key=$JANITOR_KEY
+		docker exec -it -u root $DOCKER_PHP /var/www/app/cherrycake janitorRun
+		;;
+	"janitorStatus")
+		docker exec -it -u root $DOCKER_PHP /var/www/app/cherrycake janitorStatus
 		;;
 	"redis-flush-all")
 		docker exec -it -u root $DOCKER_REDIS redis-cli flushall
