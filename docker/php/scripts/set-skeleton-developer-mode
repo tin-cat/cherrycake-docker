@@ -1,0 +1,14 @@
+#!/bin/bash
+# Sets this Cherrycake installation in app developer mode
+# This removes the exposed Cherrycake engine from /cherrycake-engine, and sets back the App to use the cherrycake engine from the composer package
+
+APP_DIR=/var/www/app
+
+if [ "$(ls -A $APP_DIR)" ]; then
+	echo "An App is already installed on /app, remove it manually first by leaving the /app directory empty."
+	exit 0
+fi
+
+git clone https://github.com/tin-cat/cherrycake-skeleton.git $APP_DIR
+composer update -d $APP_DIR
+chmod 777 $APP_DIR/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer.php

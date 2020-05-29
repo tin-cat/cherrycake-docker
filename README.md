@@ -1,4 +1,5 @@
-# 🧁 Cherrycake docker                        
+![Cherrycake logo](https://raw.githubusercontent.com/tin-cat/cherrycake-gitbook/master/.
+# Cherrycake docker                        
 https://cherrycake.io
 
 Set up a server with Cherrycake running and an application initial skeleton ready for you to start creating your application using Cherrycake.
