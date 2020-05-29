@@ -1,4 +1,4 @@
-![Cherrycake logo](https://raw.githubusercontent.com/tin-cat/cherrycake-gitbook/master/.
+![Cherrycake logo](https://raw.githubusercontent.com/tin-cat/cherrycake-gitbook/master/.gitbook/assets/cherrycake-logo.svg)
 # Cherrycake docker                        
 https://cherrycake.io
 
