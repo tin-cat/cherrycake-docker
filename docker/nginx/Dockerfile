@@ -7,4 +7,6 @@ RUN apt-get update &&\
 	default-mysql-client \
     -y
 
+COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+
 WORKDIR /var/www/app

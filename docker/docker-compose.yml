@@ -37,7 +37,7 @@ services:
             - ../variables:/variables:cached
             - ./php/additional.ini:/usr/local/etc/php/conf.d/additional.ini
             - ./php/scripts:/scripts
-    
+
     cron:
         image: cherrycake-app-cron
         container_name: cherrycake-app-cron

@@ -60,9 +60,9 @@ commands=(
 	-
 	install-skeleton
 	setup-config
+	composer-install
 	composer-update
 	install-base-database
-	setup-nginx
 	engine-developer-mode
 	-
 	cli
@@ -113,9 +113,9 @@ function listCommands {
 			"db-restart") r=$r"Restarts the Database container";;
 			"install-skeleton") r=$r"Sets up a base Cherrycake installation";;
 			"setup-config") r=$r"Creates the Cherrycake config files";;
+			"composer-install") r=$r"Installs Cherrycake's composer dependencies";;
 			"composer-update") r=$r"Updates Cherrycake's composer dependencies";;
 			"install-base-database") r=$r"Installs an initial Cherrycake database on the MariaDB container";;
-			"setup-nginx") r=$r"Sets up Nginx to work with Cherrycake";;
 			"engine-developer-mode") r=$r"Sets this installation in engine developer mode";;
 			"cli") r=$r"Executes a Cherrycake cli action. Pass the action name as value";;
 			"janitor") r=$r"Runs the janitor";;
@@ -154,10 +154,6 @@ case "$1" in
 		;;
 	"start")
 		docker-compose -p $APP_NAME --file docker/docker-compose.yml up -d
-		docker exec -it -u root $DOCKER_PHP /scripts/install-skeleton
-		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
-		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
-		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
 		;;
 	"stop")
 		docker-compose -p $APP_NAME --file docker/docker-compose.yml stop
@@ -220,20 +216,19 @@ case "$1" in
 	"install-skeleton")
 		docker exec -it -u root $DOCKER_PHP /scripts/install-skeleton
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
-		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
 		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
 		;;
 	"setup-config")
 		docker exec -it -u root $DOCKER_NGINX /scripts/setup-config
+		;;
+	"composer-install")
+		docker exec -it -u root $DOCKER_PHP /scripts/composer-install
 		;;
 	"composer-update")
 		docker exec -it -u root $DOCKER_PHP /scripts/composer-update
 		;;
 	"install-base-database")
 		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
-		;;
-	"setup-nginx")
-		docker exec -it -u root $DOCKER_NGINX /scripts/setup-nginx
 		;;
 	"engine-developer-mode")
 		cat << EOF
