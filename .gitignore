@@ -4,6 +4,9 @@ variables
 docker/mariadb-data
 docker/redis-data
 
+# Visual Studio Code workspace file
+workspace.code-workspace
+
 # Annoying files
 .DS_Store
 thumbs.db

@@ -4,7 +4,7 @@
 APP_DIR=/var/www/app
 VARIABLES_DIR=/variables
 
-if [ ! -f $APP_DIR/load.php ]; then
+if [ ! -f $APP_DIR/LICENSE_Cherrycake ]; then
 	echo "Cherrycake skeleton is not installed, couldn't create configuration files"
 	exit 1
 fi
@@ -42,7 +42,7 @@ else
 
 	JANITOR_KEY=`cat $VARIABLES_DIR/janitorKey`
 	JANITOR_KEY_ESCAPED=$(echo $JANITOR_KEY | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')
-	
+
 	cp $APP_DIR/config/Janitor.config.php.example $APP_DIR/config/Janitor.config.php
 	sed -i 's/\[replace_with_your_janitor_key\]/'$JANITOR_KEY_ESCAPED'/g' $APP_DIR/config/Janitor.config.php
 	echo "Janitor configuration file Janitor.config.php created."

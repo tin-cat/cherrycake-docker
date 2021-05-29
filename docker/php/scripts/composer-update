@@ -3,7 +3,7 @@
 
 APP_DIR=/var/www/app
 
-if [ ! -f $APP_DIR/load.php ]; then
+if [ ! -f $APP_DIR/LICENSE_Cherrycake ]; then
 	echo "Cherrycake skeleton is not installed"
 	exit 0
 fi
