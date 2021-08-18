@@ -16,7 +16,7 @@ for filename in \
 	stats.sql \
 	systemLog.sql \
 	users.sql \
-	location-data.sql
+	location.sql
 do
 	cat $APP_DIR/install/database/$filename | mysql --host=mariadb --database=cherrycake
 done
