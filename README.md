@@ -30,6 +30,7 @@ git clone https://github.com/tin-cat/cherrycake-docker.git
 * To set up a Cherrycake skeleton to start working, run the `install-skeleton` command. You only need to do this once.
 ```bash
 ./cherrycake install-skeleton
+./cherrycake composer-update
 ````
 
 * That's it, your system is now running a server with a working Cherrycake installation and a Cherrycake base skeleton that is ready for you to start working on your project, now you can:
