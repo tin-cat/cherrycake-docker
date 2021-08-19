@@ -39,6 +39,43 @@ git clone https://github.com/tin-cat/cherrycake-docker.git
 	* Access `http://localhost:8080` to admin your database (User 'root' without password)
 	* Your Cherrycake project is stored under the `/app` directory, you might start working there.
 
+### Setting up engine development mode
+
+If you're a Cherrycake engine developer, set up a development environment by following the previous steps plus the following:
+
+Open a shell into the PHP container by doing `./cherrycake php-ssh` and run the following commands:
+
+- **Uninstall the current Cherrycake engine**
+
+	Open a shell into the PHP container by doing `./cherrycake php-ssh` and run
+	```bash
+	composer remove tin-cat/cherrycake-engine
+	```
+
+- **Manually install the Cherrycake engine into `/engine`**
+	```bash
+	git clone git@github.com:tin-cat/cherrycake-engine.git engine
+	```
+
+- **Add `/engine` as a repository in `composer.json`**
+	```
+	"repositories": [
+        {
+            "type": "path",
+            "url": "/engine"
+        }
+    ],
+	```
+
+- **Require the Cherrycake engine via composer**
+
+	Open a shell into the PHP container by doing `./cherrycake php-ssh` and run
+	```bash
+	composer require tin-cat/cherrycake-engine dev-master
+	```
+
+The Cherrycake engine will now be symlinked from `vendor/tin-cat/cherrycake-engine` to `/engine`, and you will be able to work on it under `/engine` as a normal git repository.
+
 ### Other Cherrycake repositories
 
 * **Cherrycake Documentation** Documentation is available here: https://cherrycake.io

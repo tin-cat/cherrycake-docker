@@ -63,7 +63,6 @@ commands=(
 	composer-install
 	composer-update
 	install-base-database
-	engine-developer-mode
 	-
 	cli
 	janitor
@@ -116,7 +115,6 @@ function listCommands {
 			"composer-install") r=$r"Installs Cherrycake's composer dependencies";;
 			"composer-update") r=$r"Updates Cherrycake's composer dependencies";;
 			"install-base-database") r=$r"Installs an initial Cherrycake database on the MariaDB container";;
-			"engine-developer-mode") r=$r"Sets this installation in engine developer mode";;
 			"cli") r=$r"Executes a Cherrycake cli action. Pass the action name as value";;
 			"janitor") r=$r"Runs the janitor";;
 			"janitorStatus") r=$r"Shows the status of the Janitor tasks";;
@@ -229,27 +227,6 @@ case "$1" in
 		;;
 	"install-base-database")
 		docker exec -it -u root $DOCKER_NGINX /scripts/install-base-database
-		;;
-	"engine-developer-mode")
-		cat << EOF
-Modify the composer.json file with this
-
-"require": {
-	"tin-cat/cherrycake-engine": "@dev"
-},
-"repositories": {
-	"tin-cat/cherrycake-engine": {
-		"type": "path",
-		"url": "/engine",
-		"options": {
-			"symlink": true
-		}
-	}
-}
-
-Then do:
-composer require tin-cat/cherrycake-engine @dev
-EOF
 		;;
 	"cli")
 		docker exec -it -u root $DOCKER_PHP /var/www/app/cherrycake $2
