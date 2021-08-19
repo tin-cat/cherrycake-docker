@@ -18,8 +18,15 @@ You'll need docker in your system. Follow [the official docker documentation](ht
 
 * Clone the official Cherrycake docker repository
 ```bash
-git clone https://github.com/tin-cat/cherrycake-docker.git
+git clone https://github.com/tin-cat/cherrycake-docker.git [your project name]
 ```
+
+* Optionally setup your project name for the docker environment by replacing all occurrences of `cherrycake-app` with the name of your choice in the following files:
+
+	- ./cherrycake
+	- ./docker/docker-compose.yml
+	- ./docker/cron/cronjobs
+
 * There's a command line interface that allows you to run commands on your Cherrycake installation. Run `./cherrycake help` to see all the available commands.
 
 * Start the Cherrycake server by running the `start` command.
@@ -38,15 +45,6 @@ git clone https://github.com/tin-cat/cherrycake-docker.git
 	* Access `http://localhost` on your browser to see the running App.
 	* Access `http://localhost:8080` to admin your database (User 'root' without password)
 	* Your Cherrycake project is stored under the `/app` directory, you might start working there.
-
-### Optional customizations
-Optionally, you can give your docker project name other than `cherrycake-app` by replacing all occurrences of `cherrycake-app` by the name of your choice in the following files:
-
-- ./cherrycake
-- ./docker/docker-compose.yml
-- ./docker/cron/cronjobs
-
-Do this before your first `./cherrycake start` command.
 
 ### Setting up engine development mode
 
