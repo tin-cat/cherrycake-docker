@@ -10,7 +10,6 @@ echo "Installing Cherrycake skeleton database";
 echo 'CREATE DATABASE cherrycake' | mysql --host=mariadb
 for filename in \
 	janitor.sql \
-	locale.sql \
 	location.sql \
 	session.sql \
 	stats.sql \
