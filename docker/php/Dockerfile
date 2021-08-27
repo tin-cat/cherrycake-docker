@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM devilbox/php-fpm-8.1:latest
 
 ARG USER_ID
 ARG GROUP_ID
@@ -36,7 +36,8 @@ RUN apt-get update &&\
 	&& docker-php-ext-configure gd --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
-RUN docker-php-ext-install pdo_mysql mysqli json curl xml opcache exif
+#RUN docker-php-ext-install pdo_mysql mysqli json curl xml opcache exif
+RUN docker-php-ext-install opcache exif
 
 RUN printf '[PHP]\ndate.timezone = "UTC"\n' > /usr/local/etc/php/conf.d/tzone.ini
 
@@ -45,16 +46,16 @@ RUN pecl install APCu-5.1.18
 RUN docker-php-ext-enable apcu
 
 # Install XDebug
-RUN yes | pecl install xdebug \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-	&& echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
-	&& echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini \
-	&& echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini \
-	&& echo "xdebug.discover_client_host=0" >> /usr/local/etc/php/conf.d/xdebug.ini \
-	&& echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini \
-	&& echo "xdebug.idekey=VSCODE" >> /usr/local/etc/php/conf.d/xdebug.ini \
-	&& echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini
-	# && echo "xdebug.remote_log=/usr/local/etc/php/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini
+#RUN yes | pecl install xdebug \
+#    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+#	&& echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#	&& echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#	&& echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#	&& echo "xdebug.discover_client_host=0" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#	&& echo "xdebug.idekey=VSCODE" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#	&& echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini
+#	&& echo "xdebug.remote_log=/usr/local/etc/php/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini
+#	&& echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini \
 
 USER ${USER_ID}:${GROUP_ID}
 
