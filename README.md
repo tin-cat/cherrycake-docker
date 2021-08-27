@@ -23,21 +23,21 @@ git clone https://github.com/tin-cat/cherrycake-docker.git [your project name]
 
 * Optionally setup your project name for the docker environment by replacing all occurrences of `cherrycake-app` with the name of your choice in the following files:
 
-	- ./cherrycake
+	- ./makefile
 	- ./docker/docker-compose.yml
 	- ./docker/cron/cronjobs
 
-* There's a command line interface that allows you to run commands on your Cherrycake installation. Run `./cherrycake help` to see all the available commands.
+* There's a command line interface that allows you to run commands on your Cherrycake installation. Run `make help` to see all the available commands.
 
 * Start the Cherrycake server by running the `start` command.
 ```bash
-./cherrycake start
+make start
 ````
 
 * To set up a Cherrycake skeleton to start working, run the `install-skeleton` command. You only need to do this once.
 ```bash
-./cherrycake install-skeleton
-./cherrycake composer-update
+make install-skeleton
+make composer-update
 ````
 
 * That's it, your system is now running a server with a working Cherrycake installation and a Cherrycake base skeleton that is ready for you to start working on your project, now you can:
@@ -50,11 +50,11 @@ git clone https://github.com/tin-cat/cherrycake-docker.git [your project name]
 
 If you're a Cherrycake engine developer, set up a development environment by following the previous steps plus the following:
 
-Open a shell into the PHP container by doing `./cherrycake php-ssh` and run the following commands:
+Open a shell into the PHP container by doing `make php-ssh` and run the following commands:
 
 - **Uninstall the current Cherrycake engine**
 
-	Open a shell into the PHP container by doing `./cherrycake php-ssh` and run
+	Open a shell into the PHP container by doing `make php-ssh` and run
 	```bash
 	composer remove tin-cat/cherrycake-engine
 	```
@@ -76,7 +76,7 @@ Open a shell into the PHP container by doing `./cherrycake php-ssh` and run the 
 
 - **Require the Cherrycake engine via composer**
 
-	Open a shell into the PHP container by doing `./cherrycake php-ssh` and run
+	Open a shell into the PHP container by doing `make php-ssh` and run
 	```bash
 	composer require tin-cat/cherrycake-engine dev-master
 	```

@@ -1,0 +1,6 @@
+#!/bin/bash
+# Re-creates composer autoloader
+
+APP_DIR=/var/www/app
+
+composer dump-autoload -d $APP_DIR
