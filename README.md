@@ -1,6 +1,6 @@
 ![Cherrycake logo](https://raw.githubusercontent.com/tin-cat/cherrycake-gitbook/master/.gitbook/assets/cherrycake-logo.svg)
 # Cherrycake docker
-https://cherrycake.io
+https://cherrycake.tin.cat
 
 Set up a server with Cherrycake running and an application initial skeleton ready for you to start creating your application using Cherrycake.
 
@@ -85,8 +85,8 @@ The Cherrycake engine will now be symlinked from `vendor/tin-cat/cherrycake-engi
 
 ### Other Cherrycake repositories
 
-* **Cherrycake Documentation** Documentation is available here: https://cherrycake.io
-* **Example project** The https://cherrycake.io documentation web has been built itself with Cherrycake and also open sourced, you can use it as a reference: [Cherrycake documentation](https://github.com/tin-cat/cherrycake-documentation)
+* **Cherrycake Documentation** Documentation is available here: https://cherrycake.tin.cat
+* **Example project** The https://cherrycake.tin.cat documentation web has been built itself with Cherrycake and also open sourced, you can use it as a reference: [Cherrycake documentation](https://github.com/tin-cat/cherrycake-documentation)
 * **Cherrycake engine** The Cherrycake engine repository is available at [Cherrycake Engine](https://github.com/tin-cat/cherrycake)
 * **Cherrycake Skeleton** Clone or download the [Cherrycake Skeleton](https://github.com/tin-cat/cherrycake-skeleton) repository to use it as the starting point for your project.
 * **Cherrycake Docker** The [Cherrycake Docker](https://github.com/tin-cat/cherrycake-docker) sets up a complete server with Cherrycake running and a skeleton installed ready for you to start your project straightaway.
